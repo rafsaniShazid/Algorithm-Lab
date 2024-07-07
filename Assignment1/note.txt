@@ -1,0 +1,3 @@
+This assignment aims to help students understand and implement Dijkstra's shortest path algorithm.
+ Students will also learn how to create and use a custom min-heap data structure to efficiently 
+ manage the priority queue operations required by Dijkstra's algorithm.
