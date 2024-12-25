@@ -1,66 +1,50 @@
-#include<bits/stdc++.h>
+#include <bits/stdc++.h>
 typedef long long ll;
-#define forr(i, j, k) for(ll i = j; i < k; i++)
+#define forr(i, j, k) for (ll i = j; i < k; i++)
 using namespace std;
+const int N = 1e5 + 10;
+vector<int> size(N, 0);
+vector<int> parent(N, 0);
 
-class DisjointSetUnion{
-    vector<int>rank,parent;
-public:
-    DisjointSetUnion(int n){
-        rank.resize(n+1,0);
-        parent.resize(n+1);
-        forr(i,0,n+1)
-            parent[i]=i;
-    }
-    int findParent(int u){
-        if(parent[u]==u) return u;
-        return findParent(parent[u]);
-    }
-    void unionByRank(int m,int n){
-        int up_m= findParent(m);
-        int up_n= findParent(n);
-        if(up_m==up_n) return;
-        if(rank[up_m]<rank[up_n]) parent[up_m]=up_n;
-        else if(rank[up_m]>rank[up_n]) parent[up_n]=up_m;
-        else{
-            parent[up_n]=up_m;
-            rank[up_m]++;
-        }
-    }
-};
-int main(){
-    //enter vertices v and edges e;
-    int v,e; cin>>v>>e;
-    DisjointSetUnion ds(v);
-    // Enter the edges
-    forr(i,0,e){
-        int u,v; cin>>u>>v;
-        ds.unionByRank(u,v);
-    }
-    // Enter the  query q
-    cout<<"Enter the  query q\n";
-    int q; cin>>q;
-    while(q--){
-    cout<<"Enter the value m and n you wanna check\n";
-    int m,n; cin>>m>>n;
-    if(ds.findParent(m)==ds.findParent(n)) cout<<"same\n";
-    else cout<<"different\n";
-    }
-    /* sample input
-    7 5
+void make(int i) {
+    parent[i] = i;
+    size[i] = 1;
+}
 
-    1 2
-    1 3
-    4 3
-    6 5
-    7 5
-    2
-    1 2
-    1 5
+int find(int i) {
+    if (i == parent[i]) return i;
+    return parent[i] = find(parent[i]);
+}
 
-    sample output
-    same
-    different
-    */
+void Union(int x, int y) {
+    int a = find(x);
+    int b = find(y);
+    if (a != b) {
+        if (size[a] < size[b]) swap(a, b);
+        parent[b] = a;
+        size[a] += size[b];
+    }
+}
+
+int main() {
+    int n, k;
+    cin >> n >> k; // Read number of nodes and edges
+    forr(i, 0, n) {
+        make(i); // Initialize all nodes
+    }
+
+    // Use a for loop to ensure all edges are read
+    forr(i, 0, k) {
+        int a, b;
+        cin >> a >> b; // Read an edge
+        Union(a, b);
+    }
+
+    int connected_comp = 0;
+    forr(i, 0, n) {
+        if (find(i) == i) connected_comp++; // Count connected components
+    }
+    cout << connected_comp << endl;
+
     return 0;
 }
